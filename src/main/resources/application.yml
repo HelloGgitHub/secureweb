@@ -1,0 +1,42 @@
+spring:
+  profiles: 
+    active: local
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+  output:
+    ansi:
+      enabled: always  # 콘솔 창에 출력되는 로깅 메세지를 색으로 구분해서 출력 
+  jmx:
+    default-domain: egovTest
+---
+logging:
+#  file: /home/vagrant/memberMng/log/egovGrpMng.log
+#    path: /home/vagrant/memberMng/log/egovGrpMng.log  # 로그 메세지가 저장되는 로그 디렉터리
+#    path: C:\work\log\  # 로그 메세지가 저장되는 로그 디렉터리55555566666666fff55555
+#    name: egovGrpMng.log
+  size: max-10MB
+  level:
+    egovframework: DEBUG
+---
+#mybatis:
+#  mapper-locations: classpath:mapper/**/*.xml
+#  configuration:
+#    lazyLoadingEnabled: true
+#    aggressiveLazyLoading: false
+#    mapUnderscoreToCamelCase: true
+---
+spring:
+  profiles: local 
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://192.168.33.20:3306/EGOVCLDDEV
+    username: egovclddev
+    password: Helloegov1!
+server:
+  port: 9900
+  task:
+    fixedDelay: 1000
+    name: mariaTask
+
