@@ -13,8 +13,8 @@ import com.gpki.gpkiapi.storage.Disk;
 
 
 /*
- * º»ÀÎÈ®ÀÎÀ» ÇÔ²² ¼öÇàÇÏ´Â ·Î±×ÀÎ
- * (ÁÖ¹Îµî·Ï¹øÈ£¸¦ ¼­¹ö¿¡¼­ °¡Áö°í ÀÖÁö ¾ÊÀº °æ¿ì)
+ * ë³¸ì¸í™•ì¸ì„ í•¨ê»˜ ìˆ˜í–‰í•˜ëŠ” ë¡œê·¸ì¸
+ * (ì£¼ë¯¼ë“±ë¡ë²ˆí˜¸ë¥¼ ì„œë²„ì—ì„œ ê°€ì§€ê³  ìˆì§€ ì•Šì€ ê²½ìš°)
  * */
 public class LoginWithConfirmVIDAndNoIDN {
 
@@ -23,7 +23,7 @@ public class LoginWithConfirmVIDAndNoIDN {
 		byte[] bRandom = null;
 		
 		try {
-			// ·£´ı°ª 20Byte(R1)¸¦ »ı¼º
+			// ëœë¤ê°’ 20Byte(R1)ë¥¼ ìƒì„±
 			Random random = new Random();
 			bRandom = random.generateRandom(20);
 		} catch (Exception e) {
@@ -38,7 +38,7 @@ public class LoginWithConfirmVIDAndNoIDN {
 		byte[] bSvrCert = null;
 		
 		try {
-			// ¼­¹öÀÇ Å°ºĞ¹è¿ë ÀÎÁõ¼­ ·Îµå
+			// ì„œë²„ì˜ í‚¤ë¶„ë°°ìš© ì¸ì¦ì„œ ë¡œë“œ
 			X509Certificate svrCert = Disk.readCert("C:/GPKI/Certificate/class1/SVR1310101010_env.cer");
 			bSvrCert = svrCert.getCert();
 		} catch (Exception e) {
@@ -57,18 +57,18 @@ public class LoginWithConfirmVIDAndNoIDN {
 		PrivateKey signPriKey = null;
 		
 		try {
-			// ·Î±×ÀÎ¿¡ »ç¿ëÇÒ ¼­¸í¿ë ÀÎÁõ¼­¿Í °³ÀÎÅ°¸¦ È¹µæ
-			signCert = Disk.readCert("C:/GPKI/Certificate/class2/085»ç¿ëÀÚ003_sig.cer");
-			signPriKey = Disk.readPriKey("C:/GPKI/Certificate/class2/085»ç¿ëÀÚ003_sig.key", "sppo1234");
+			// ë¡œê·¸ì¸ì— ì‚¬ìš©í•  ì„œëª…ìš© ì¸ì¦ì„œì™€ ê°œì¸í‚¤ë¥¼ íšë“
+			signCert = Disk.readCert("C:/GPKI/Certificate/class2/085ì‚¬ìš©ì003_sig.cer");
+			signPriKey = Disk.readPriKey("C:/GPKI/Certificate/class2/085ì‚¬ìš©ì003_sig.key", "sppo1234");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		// »ç¿ëÀÚ·ÎºÎÅÍ ½Äº°¹øÈ£¸¦ ÀÔ·Â¹ŞÀ½
+		// ì‚¬ìš©ìë¡œë¶€í„° ì‹ë³„ë²ˆí˜¸ë¥¼ ì…ë ¥ë°›ìŒ
 		String sIDN = "1234561234567";
 		
 		try {
-			// °³ÀÎÅ°·ÎºÎÅÍ º»ÀÎÈ®ÀÎÀ» À§ÇØ¼­ ÇÊ¿äÇÑ ºñ¹ĞÅ°¸¦ È¹µæ
+			// ê°œì¸í‚¤ë¡œë¶€í„° ë³¸ì¸í™•ì¸ì„ ìœ„í•´ì„œ í•„ìš”í•œ ë¹„ë°€í‚¤ë¥¼ íšë“
 			bRandomForVID = signPriKey.getRandomForVID();
 		} catch (Exception e) {
 
@@ -77,7 +77,7 @@ public class LoginWithConfirmVIDAndNoIDN {
 		byte[] bData = null;
 		
 		try {
-			// ¼­¹ö·ÎºÎÅÍ ¹ŞÀº R1°ú ½Äº°¹øÈ£, ºñ¹ĞÅ°¸¦ ¼­¸íÇÏ°í ¼­¹öÀÇ Å°ºĞ¹è¿ë ÀÎÁõ¼­¸¦ ÀÌ¿ëÇÏ¿© ¾ÏÈ£È­
+			// ì„œë²„ë¡œë¶€í„° ë°›ì€ R1ê³¼ ì‹ë³„ë²ˆí˜¸, ë¹„ë°€í‚¤ë¥¼ ì„œëª…í•˜ê³  ì„œë²„ì˜ í‚¤ë¶„ë°°ìš© ì¸ì¦ì„œë¥¼ ì´ìš©í•˜ì—¬ ì•”í˜¸í™”
 			if (bRandomForVID != null)
 			{
 				bData = new byte[bRandom.length + sIDN.length() + bRandomForVID.length];
@@ -110,11 +110,11 @@ public class LoginWithConfirmVIDAndNoIDN {
 	void verifyAndDecrypt(byte[] bMyCert, byte[] bSvrRandom, byte[] bSignAndEnvData) {
 		
 		try {
-			// Å¬¶óÀÌ¾ğÆ®·ÎºÎÅÍ ¹ŞÀº µ¥ÀÌÅÍ¸¦ º¹È£È­ÇÏ±â À§ÇØ¼­ Å°ºĞ¹è¿ë °³ÀÎÅ°¸¦ ·Îµå
+			// í´ë¼ì´ì–¸íŠ¸ë¡œë¶€í„° ë°›ì€ ë°ì´í„°ë¥¼ ë³µí˜¸í™”í•˜ê¸° ìœ„í•´ì„œ í‚¤ë¶„ë°°ìš© ê°œì¸í‚¤ë¥¼ ë¡œë“œ
 			X509Certificate svrKmCert = new X509Certificate(bMyCert);
 			PrivateKey svrKmPriKey = Disk.readPriKey("C:/GPKI/Certificate/class1/SVR1310101010_env.key", "qwer1234");
 			
-			// Å¬¶óÀÌ¾ğÆ®·ÎºÎÅÍ ¹ŞÀº µ¥ÀÌÅÍ¸¦ º¹È£È­ ¹× ¼­¸í °ËÁõÇÏ°í ¿øº» µ¥ÀÌÅÍ¸¦ È¹µæ
+			// í´ë¼ì´ì–¸íŠ¸ë¡œë¶€í„° ë°›ì€ ë°ì´í„°ë¥¼ ë³µí˜¸í™” ë° ì„œëª… ê²€ì¦í•˜ê³  ì›ë³¸ ë°ì´í„°ë¥¼ íšë“
 			SignedAndEnvelopedData signAndEnvData = new SignedAndEnvelopedData();
 			signAndEnvData.setMyCert(svrKmCert, svrKmPriKey);
 			byte[] bData = signAndEnvData.process(bSignAndEnvData);
@@ -132,35 +132,35 @@ public class LoginWithConfirmVIDAndNoIDN {
 				System.arraycopy(bData, 33, bRandomForVID, 0, bData.length-33);
 			}
 			
-			// ¼­¸í°ª¿¡ Æ÷ÇÔµÇ¾îÀÖ´ø ¿øº»¸Ş½ÃÁö°¡ ¼­¹ö°¡ ÀÌÀü¿¡  Àü¼ÛÇß´ø ¸Ş½ÃÁö¿Í °°ÀºÁö È®ÀÎ
+			// ì„œëª…ê°’ì— í¬í•¨ë˜ì–´ìˆë˜ ì›ë³¸ë©”ì‹œì§€ê°€ ì„œë²„ê°€ ì´ì „ì—  ì „ì†¡í–ˆë˜ ë©”ì‹œì§€ì™€ ê°™ì€ì§€ í™•ì¸
 			if (bRandom.length != bSvrRandom.length)
-				throw new Exception("¼­¹ö¿¡¼­ º¸³½ ·£´ı°ª¿¡ ´ëÇÑ ¼­¸íÀÌ ¾Æ´Õ´Ï´Ù.");
+				throw new Exception("ì„œë²„ì—ì„œ ë³´ë‚¸ ëœë¤ê°’ì— ëŒ€í•œ ì„œëª…ì´ ì•„ë‹™ë‹ˆë‹¤.");
 			
 			for (int i=0; i < bRandom.length; i++)
 			{
 				if (bRandom[i] != bSvrRandom[i])
-					throw new Exception("¼­¹ö¿¡¼­ º¸³½ ·£´ı°ª¿¡ ´ëÇÑ ¼­¸íÀÌ ¾Æ´Õ´Ï´Ù.");
+					throw new Exception("ì„œë²„ì—ì„œ ë³´ë‚¸ ëœë¤ê°’ì— ëŒ€í•œ ì„œëª…ì´ ì•„ë‹™ë‹ˆë‹¤.");
 			}
 
-			// ÅëÇÕ°ËÁõ¼­¹ö¿¡ ÀÎÁõ¼­ °ËÁõÀ» ¿äÃ»ÇÏ±â À§ÇØ¼­ ¼­¹öÀÇ ¼­¸í¿ë ÀÎÁõ¼­ È¹µæ
+			// í†µí•©ê²€ì¦ì„œë²„ì— ì¸ì¦ì„œ ê²€ì¦ì„ ìš”ì²­í•˜ê¸° ìœ„í•´ì„œ ì„œë²„ì˜ ì„œëª…ìš© ì¸ì¦ì„œ íšë“
 			X509Certificate svrCert = Disk.readCert("C:/GPKI/Certificate/class1/SVR1310101010_sig.cer");
 			
-			// °ËÁõÇÒ Å¬¶óÀÌ¾ğÆ®ÀÇ ÀÎÁõ¼­ È¹µæ
+			// ê²€ì¦í•  í´ë¼ì´ì–¸íŠ¸ì˜ ì¸ì¦ì„œ íšë“
 			X509Certificate clientCert = signAndEnvData.getSignerCert();
 			
-			//  Å¬¶óÀÌ¾ğÆ®ÀÇ ÀÎÁõ¼­¸¦  ÅëÇÕ°ËÁõ¼­¹ö¸¦ ÀÌ¿ëÇÏ¿© °ËÁõ
+			//  í´ë¼ì´ì–¸íŠ¸ì˜ ì¸ì¦ì„œë¥¼  í†µí•©ê²€ì¦ì„œë²„ë¥¼ ì´ìš©í•˜ì—¬ ê²€ì¦
 			VerifyCert verifyCert = new VerifyCert("./gpkiapi.conf");
 			
 			verifyCert.setMyCert(svrCert);
 			verifyCert.verify(clientCert);
 			
-			// ÅëÇÕ°ËÁõ¼­¹ö¸¦ ÅëÇÏ¿© º»ÀÎÈ®ÀÎÀ» ¼öÇà
+			// í†µí•©ê²€ì¦ì„œë²„ë¥¼ í†µí•˜ì—¬ ë³¸ì¸í™•ì¸ì„ ìˆ˜í–‰
 			IdentifyUser identifyUser = new IdentifyUser("./gpkiapi.conf");
 			
 			identifyUser.setMyCert(svrCert);
 			identifyUser.identify(bIDN.toString(), bRandomForVID, clientCert);
 			
-			// Å¬¶óÀÌ¾ğÆ®ÀÇ ÀÎÁõ¼­ÀÇ ÀÌ¸§À» ÀÌ¿ëÇÏ¿© ÇØ´ç Å¬¶óÀÌ¾ğÆ®ÀÇ ·Î±×ÀÎ ¼ö¿ë ¿©ºÎ È®ÀÎ
+			// í´ë¼ì´ì–¸íŠ¸ì˜ ì¸ì¦ì„œì˜ ì´ë¦„ì„ ì´ìš©í•˜ì—¬ í•´ë‹¹ í´ë¼ì´ì–¸íŠ¸ì˜ ë¡œê·¸ì¸ ìˆ˜ìš© ì—¬ë¶€ í™•ì¸
 			String sClientName = clientCert.getSubjectDN();
 			
 		} catch (Exception e) {
@@ -170,21 +170,21 @@ public class LoginWithConfirmVIDAndNoIDN {
 	
 	void login() {
 		
-		// API ÃÊ±âÈ­
+		// API ì´ˆê¸°í™”
 		try {
 			GpkiApi.init(".");
 		} catch (Exception e) {
 			e.printStackTrace();		
 		}
 		
-		// ¼­¹ö
+		// ì„œë²„
 		byte[] bRandom = genRandom();
 		byte[] bSvrCert = loadSvrCert();
 		
-		// Å¬¶óÀÌ¾ğÆ®
+		// í´ë¼ì´ì–¸íŠ¸
 		byte[] bSignAndEnvData = signAndEncrypt(bRandom, bSvrCert);
 		
-		// ¼­¹ö
+		// ì„œë²„
 		verifyAndDecrypt(bSvrCert, bRandom, bSignAndEnvData);
 	}
 	

@@ -9,8 +9,7 @@ import com.gpki.gpkiapi.storage.Disk;
 
 
 /*
- * À¯¼±È¯°æ¿¡¼­ »ç¿ëÀÚ°¡ ÀüÀÚ¹®¼­¿¡ ¼­¸íÇÏ´Â °æ¿ì
- * À¯¼±È¯°æ¿¡¼­ÀÇ ÀüÀÚ¹®¼­ ¼­¸í
+ * ìœ ì„ í™˜ê²½ì—ì„œì˜ ì „ìë¬¸ì„œ ì„œëª…
  * */
 public class DocumentSign {
 
@@ -19,14 +18,14 @@ public class DocumentSign {
 		byte[] bSignedData = null;
 		
 		try {
-			// ¼­¸íÇÒ ÀüÀÚ¹®¼­ ³»¿ëÀ» È®ÀÎ
+			// ì„œëª…í•  ì „ìë¬¸ì„œ ë‚´ìš©ì„ í™•ì¸
 			byte[] bDocument = Disk.read("./document.txt");
 			
-			// ÀüÀÚ¹®¼­¿¡ ¼­¸í ½Ã, »ç¿ëÇÒ ÀÎÁõ¼­¿Í °³ÀÎÅ°¸¦ È¹µæ
-			X509Certificate signCert = Disk.readCert("C:/GPKI/Certificate/class2/085»ç¿ëÀÚ003_sig.cer");
-			PrivateKey signPriKey = Disk.readPriKey("C:/GPKI/Certificate/class2/085»ç¿ëÀÚ003_sig.key", "sppo1234");
+			// ì „ìë¬¸ì„œì— ì„œëª… ì‹œ, ì‚¬ìš©í•  ì¸ì¦ì„œì™€ ê°œì¸í‚¤ë¥¼ íšë“
+			X509Certificate signCert = Disk.readCert("C:/GPKI/Certificate/class2/085ì‚¬ìš©ì003_sig.cer");
+			PrivateKey signPriKey = Disk.readPriKey("C:/GPKI/Certificate/class2/085ì‚¬ìš©ì003_sig.key", "sppo1234");
 			
-			// ÀüÀÚ¹®¼­ ¼­¸í
+			// ì „ìë¬¸ì„œ ì„œëª…
 			SignedData signedData = new SignedData();
 			signedData.setMessage(bDocument);
 			bSignedData = signedData.generate(signCert, signPriKey);
@@ -41,23 +40,23 @@ public class DocumentSign {
 	void verify(byte[] bSignedData) {
 		
 		try {
-			// ¼­¸í°ªÀ» °ËÁõ
+			// ì„œëª…ê°’ì„ ê²€ì¦
 			SignedData signedData = new SignedData();
 			signedData.verify(bSignedData);
 			
-			// ¼­¸íÀÚÀÇ ÀÎÁõ¼­ °ËÁõÀ» À§ÇØ¼­ ¼­¹öÀÇ ¼­¸í¿ë ÀÎÁõ¼­ È¹µæ
+			// ì„œëª…ìì˜ ì¸ì¦ì„œ ê²€ì¦ì„ ìœ„í•´ì„œ ì„œë²„ì˜ ì„œëª…ìš© ì¸ì¦ì„œ íšë“
 			X509Certificate clientCert = signedData.getSignerCert(0);
 			
-			// ÅëÇÕ°ËÁõ¼­¹ö¿¡ ÀÎÁõ¼­ °ËÁõÀ» ¿äÃ»ÇÏ±â À§ÇØ¼­ ¼­¹öÀÇ ¼­¸í¿ë ÀÎÁõ¼­ È¹µæ
+			// í†µí•©ê²€ì¦ì„œë²„ì— ì¸ì¦ì„œ ê²€ì¦ì„ ìš”ì²­í•˜ê¸° ìœ„í•´ì„œ ì„œë²„ì˜ ì„œëª…ìš© ì¸ì¦ì„œ íšë“
 			X509Certificate svrCert = Disk.readCert("C:/GPKI/Certificate/class1/SVR1310101010_sig.cer");
 			
-			// ÅëÇÕ°ËÁõ¼­¹ö¸¦ ÀÌ¿ëÇÑ ¼­¸íÀÚÀÇ ÀÎÁõ¼­ °ËÁõ
+			// í†µí•©ê²€ì¦ì„œë²„ë¥¼ ì´ìš©í•œ ì„œëª…ìì˜ ì¸ì¦ì„œ ê²€ì¦
 			VerifyCert verifyCert = new VerifyCert("./gpkiapi.conf");
 			
 			verifyCert.setMyCert(svrCert);
 			verifyCert.verify(clientCert);
 			
-			// ÀüÀÚ¹®¼­ ³»¿ë È®ÀÎ ¶Ç´Â ÀúÀå
+			// ì „ìë¬¸ì„œ ë‚´ìš© í™•ì¸ ë˜ëŠ” ì €ì¥
 			byte[] bDomcument = signedData.getMessage();
 			
 		} catch (Exception e) {
@@ -67,17 +66,17 @@ public class DocumentSign {
 	
 	void signAndVerify() {
 		
-		// API ÃÊ±âÈ­
+		// API ì´ˆê¸°í™”
 		try {
 			GpkiApi.init(".");
 		} catch (Exception e) {
 			e.printStackTrace();		
 		}
 		
-		// Å¬¶óÀÌ¾ğÆ®
+		// í´ë¼ì´ì–¸íŠ¸
 		byte[] bSignedData = sign();
 		
-		// ¼­¹ö
+		// ì„œë²„
 		verify(bSignedData);
 	}
 }

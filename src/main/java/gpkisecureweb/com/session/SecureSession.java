@@ -11,8 +11,7 @@ import com.gpki.gpkiapi.storage.Disk;
 
 
 /*
- * À¯¼±È¯°æ¿¡¼­ ¾ÏÈ£È­ ¼¼¼ÇÀ» ¸Î´Â °æ¿ì
- * À¯¼±È¯°æ¿¡¼­ ¾ÏÈ£ ¼¼¼Ç ¸Î±â
+ * ìœ ì„ í™˜ê²½ì—ì„œ ì•”í˜¸ ì„¸ì…˜ ë§ºê¸°
  * */
 public class SecureSession {
 
@@ -24,7 +23,7 @@ public class SecureSession {
 		byte[] bRandom = null;
 		
 		try {
-			// ·£´ı°ª 20Byte(R1)¸¦ »ı¼º
+			// ëœë¤ê°’ 20Byte(R1)ë¥¼ ìƒì„±
 			Random random = new Random();
 			bRandom = random.generateRandom(20);
 		} catch (Exception e) {
@@ -39,7 +38,7 @@ public class SecureSession {
 		byte[] bSvrCert = null;
 		
 		try {
-			// ¼­¹öÀÇ Å°ºĞ¹è¿ë ÀÎÁõ¼­ ·Îµå
+			// ì„œë²„ì˜ í‚¤ë¶„ë°°ìš© ì¸ì¦ì„œ ë¡œë“œ
 			X509Certificate svrCert = Disk.readCert("C:/GPKI/Certificate/class1/SVR1310101010_env.cer");
 			bSvrCert = svrCert.getCert();
 		} catch (Exception e) {
@@ -55,14 +54,14 @@ public class SecureSession {
 		
 		try {
 			
-			// ¼¼¼ÇÅ°¸¦ »ı¼ºÇÏ¿© ·£´ı°ª ¾ÏÈ£È­ ¹× ¼¼¼ÇÅ°¸¦ ¼­¹öÀÇ Å°ºĞ¹è¿ë ÀÎÁõ¼­·Î ¾ÏÈ£È­
+			// ì„¸ì…˜í‚¤ë¥¼ ìƒì„±í•˜ì—¬ ëœë¤ê°’ ì•”í˜¸í™” ë° ì„¸ì…˜í‚¤ë¥¼ ì„œë²„ì˜ í‚¤ë¶„ë°°ìš© ì¸ì¦ì„œë¡œ ì•”í˜¸í™”
 			X509Certificate svrCert = new X509Certificate(bSvrCert);
 			
 			EnvelopedData envData = new EnvelopedData("NEAT");
 			envData.addRecipient(svrCert);
 			bEnvData = envData.generate(bRandom);
 			
-			// ¾ÏÈ£È­ Ã¤³ÎÀ» À§ÇÑ ¼¼¼ÇÅ° È¹µæ
+			// ì•”í˜¸í™” ì±„ë„ì„ ìœ„í•œ ì„¸ì…˜í‚¤ íšë“
 			client_session_key = envData.getSecretKey();
 			
 		} catch (Exception e) {
@@ -75,25 +74,25 @@ public class SecureSession {
 	void decrypt(byte[] bMyCert, byte[] bSvrRandom, byte[] bEnvData) {
 		
 		try {
-			// Å¬¶óÀÌ¾ğÆ®·ÎºÎÅÍ ¹ŞÀº µ¥ÀÌÅÍ¸¦ º¹È£È­ÇÏ±â À§ÇØ¼­ Å°ºĞ¹è¿ë °³ÀÎÅ°¸¦ ·Îµå
+			// í´ë¼ì´ì–¸íŠ¸ë¡œë¶€í„° ë°›ì€ ë°ì´í„°ë¥¼ ë³µí˜¸í™”í•˜ê¸° ìœ„í•´ì„œ í‚¤ë¶„ë°°ìš© ê°œì¸í‚¤ë¥¼ ë¡œë“œ
 			X509Certificate svrKmCert = new X509Certificate(bMyCert);
 			PrivateKey svrKmPriKey = Disk.readPriKey("C:/GPKI/Certificate/class1/SVR1310101010_env.key", "qwer1234");
 			
-			// ¼­¹öÀÇ Å°ºĞ¹è¿ë ÀÎÁõ¼­¿Í °³ÀÎÅ° ½ÖÀ¸·Î ¾ÏÈ£È­µÈ ¼¼¼ÇÅ°¸¦ È¹µæÇÏ°í, È¹µæÇÑ ¼¼¼ÇÅ°·Î ¾ÏÈ£È­µÇ¾î ÀÖ´ø ·£´ı°ªÀ» È¹µæ
+			// ì„œë²„ì˜ í‚¤ë¶„ë°°ìš© ì¸ì¦ì„œì™€ ê°œì¸í‚¤ ìŒìœ¼ë¡œ ì•”í˜¸í™”ëœ ì„¸ì…˜í‚¤ë¥¼ íšë“í•˜ê³ , íšë“í•œ ì„¸ì…˜í‚¤ë¡œ ì•”í˜¸í™”ë˜ì–´ ìˆë˜ ëœë¤ê°’ì„ íšë“
 			EnvelopedData envData = new EnvelopedData();
 			byte[] bRandom = envData.process(bEnvData, svrKmCert, svrKmPriKey);
 			
-			// È¹µæÇÑ ·£´ı°ªÀÌ ¨çÅ¬¶óÀÌ¾ğÆ®¿¡ Àü¼ÛÇß´ø ·£´ı°ª°ú °°ÀºÁö È®ÀÎ
+			// íšë“í•œ ëœë¤ê°’ì´ â‘ í´ë¼ì´ì–¸íŠ¸ì— ì „ì†¡í–ˆë˜ ëœë¤ê°’ê³¼ ê°™ì€ì§€ í™•ì¸
 			if (bRandom.length != bSvrRandom.length)
-				throw new Exception("¼­¹ö¿¡¼­ º¸³½ ·£´ı°ª¿¡ ´ëÇÑ ¼­¸íÀÌ ¾Æ´Õ´Ï´Ù.");
+				throw new Exception("ì„œë²„ì—ì„œ ë³´ë‚¸ ëœë¤ê°’ì— ëŒ€í•œ ì„œëª…ì´ ì•„ë‹™ë‹ˆë‹¤.");
 			
 			for (int i=0; i < bRandom.length; i++)
 			{
 				if (bRandom[i] != bSvrRandom[i])
-					throw new Exception("¼­¹ö¿¡¼­ º¸³½ ·£´ı°ª¿¡ ´ëÇÑ ¼­¸íÀÌ ¾Æ´Õ´Ï´Ù.");
+					throw new Exception("ì„œë²„ì—ì„œ ë³´ë‚¸ ëœë¤ê°’ì— ëŒ€í•œ ì„œëª…ì´ ì•„ë‹™ë‹ˆë‹¤.");
 			}
 
-			// ¾ÏÈ£È­ Ã¤³ÎÀ» À§ÇÑ ¼¼¼ÇÅ° È¹µæ
+			// ì•”í˜¸í™” ì±„ë„ì„ ìœ„í•œ ì„¸ì…˜í‚¤ íšë“
 			server_session_key = envData.getSecretKey();
 			
 		} catch (Exception e) {
@@ -107,10 +106,10 @@ public class SecureSession {
 		
 		try {
 			
-			// Àü¼ÛÇÒ µ¥ÀÌÅÍ È¹µæ
+			// ì „ì†¡í•  ë°ì´í„° íšë“
 			byte[] bData = Disk.read("./Document.txt");
 			
-			// Àü¼ÛÇÒ µ¥ÀÌÅÍ ¼¼¼ÇÅ°·Î ¾ÏÈ£È­
+			// ì „ì†¡í•  ë°ì´í„° ì„¸ì…˜í‚¤ë¡œ ì•”í˜¸í™”
 			Cipher cipher = Cipher.getInstance("NEAT/CBC");
 			cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 			bCipherText = cipher.doFinal(bData);
@@ -128,7 +127,7 @@ public class SecureSession {
 			
 			byte[] bPlainText = null;
 			
-			// ¾ÏÈ£¹® º¹È£È­
+			// ì•”í˜¸ë¬¸ ë³µí˜¸í™”
 			Cipher cipher = Cipher.getInstance("NEAT/CBC");
 			cipher.init(Cipher.DECRYPT_MODE, secretKey);
 			bPlainText = cipher.doFinal(bCipherText);
@@ -141,31 +140,31 @@ public class SecureSession {
 	
 	void makeSecureSession() {
 		
-		// API ÃÊ±âÈ­
+		// API ì´ˆê¸°í™”
 		try {
 			GpkiApi.init(".");
 		} catch (Exception e) {
 			e.printStackTrace();		
 		}
 		
-		// ¼­¹ö
+		// ì„œë²„
 		byte[] bRandom = genRandom();
 		byte[] bSvrCert = loadSvrCert();
 		
-		// Å¬¶óÀÌ¾ğÆ®
+		// í´ë¼ì´ì–¸íŠ¸
 		byte[] bEnvData = encrypt(bRandom, bSvrCert);
 		
-		// ¼­¹ö
+		// ì„œë²„
 		decrypt(bSvrCert, bRandom, bEnvData);
 		
 		////////////////////////////////////////
-		// ¾ÏÈ£ ¼¼¼ÇÀ» ¸Î±â À§ÇÑ Å° °øÀ¯ ¿Ï·á //
+		// ì•”í˜¸ ì„¸ì…˜ì„ ë§ºê¸° ìœ„í•œ í‚¤ ê³µìœ  ì™„ë£Œ //
 		////////////////////////////////////////
 		
-		// ¼­¹ö 
+		// ì„œë²„ 
 		byte[] bCipherText = encrypt(server_session_key);
 		
-		// Å¬¶óÀÌ¾ğÆ®
+		// í´ë¼ì´ì–¸íŠ¸
 		decrypt(bCipherText, client_session_key);
 	}
 }

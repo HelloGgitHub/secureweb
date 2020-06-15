@@ -10,37 +10,37 @@ import com.gpki.gpkiapi.tsa.TimeStampToken;
 import com.gpki.gpkiapi.util.Dump;
 
 /*
- * ½ÃÁ¡È®ÀÎ ¼­ºñ½º ÀÌ¿ëÇÏ±â
- * ÀüÀÚ¹®¼­ÀÇ ÀÛ¼ºÀÏÀÚ¸¦ ½ÇÁ¦ ½Ã°£º¸´Ù ÀüÀÌ³ª ÈÄ¿¡ ÀÛ¼ºµÈ °ÍÃ³·³ µµ¿ëÇÏ´Â °ÍÀ» ¹æÁöÇÏ°Å³ª ¾î´À ½ÃÁ¡¿¡ ÀüÀÚ¹®¼­¸¦ °¡Áö°í ÀÖ¾úÀ½À» Áõ¸íÇÏ±â À§ÇÑ ½ÃÁ¡È®ÀÎ ¼­ºñ½º¸¦ ÀÌ¿ëÇÏ¿© ½ÃÁ¡È®ÀÎ ÅäÅ«À» ¹ß±Ş ¹Ş´Â´Ù.
+ * ì‹œì í™•ì¸ ì„œë¹„ìŠ¤ ì´ìš©í•˜ê¸°
+ * ì „ìë¬¸ì„œì˜ ì‘ì„±ì¼ìë¥¼ ì‹¤ì œ ì‹œê°„ë³´ë‹¤ ì „ì´ë‚˜ í›„ì— ì‘ì„±ëœ ê²ƒì²˜ëŸ¼ ë„ìš©í•˜ëŠ” ê²ƒì„ ë°©ì§€í•˜ê±°ë‚˜ ì–´ëŠ ì‹œì ì— ì „ìë¬¸ì„œë¥¼ ê°€ì§€ê³  ìˆì—ˆìŒì„ ì¦ëª…í•˜ê¸° ìœ„í•œ ì‹œì í™•ì¸ ì„œë¹„ìŠ¤ë¥¼ ì´ìš©í•˜ì—¬ ì‹œì í™•ì¸ í† í°ì„ ë°œê¸‰ ë°›ëŠ”ë‹¤.
  * */
 public class TimeStampService {
 	
 	void obtainTimeStampToken() {
 
 		try {
-			// API ÃÊ±âÈ­
+			// API ì´ˆê¸°í™”
 			GpkiApi.init(".");
 	
-			// ½ÃÁ¡È®ÀÎ ÅäÅ«À» ¹ß±Ş ¹ŞÀ» ÀüÀÚ¹®¼­¸¦ È¹µæÇÑ´Ù.
+			// ì‹œì í™•ì¸ í† í°ì„ ë°œê¸‰ ë°›ì„ ì „ìë¬¸ì„œë¥¼ íšë“í•œë‹¤.
 			byte[] bDocument = Disk.read("./Document.txt");
 			
-			// ÀüÀÚ¹®¼­¿¡ ´ëÇÑ ½ÃÁ¡È®ÀÎ ÅäÅ«À» ¿äÃ»ÇÑ´Ù.
+			// ì „ìë¬¸ì„œì— ëŒ€í•œ ì‹œì í™•ì¸ í† í°ì„ ìš”ì²­í•œë‹¤.
 			TimeStamp timeStamp = new TimeStamp();
 			timeStamp.setMessage(bDocument);
 			TimeStampToken timeStampToken = timeStamp.reqTimeStampToken("152.99.56.61", 80);
 			
-			// ¹ŞÀº ½ÃÁ¡È®ÀÎ ÅäÅ«ÀÇ Á¤º¸¸¦ È®ÀÎÇÑ´Ù.
+			// ë°›ì€ ì‹œì í™•ì¸ í† í°ì˜ ì •ë³´ë¥¼ í™•ì¸í•œë‹¤.
 			
-			System.out.println("* ½ÃÁ¡È®ÀÎ ÅäÅ« Á¤º¸ ");
+			System.out.println("* ì‹œì í™•ì¸ í† í° ì •ë³´ ");
 			
-			// 1. ½ÃÁ¡È®ÀÎ ¼­¹öÀÇ ÀÌ¸§
+			// 1. ì‹œì í™•ì¸ ì„œë²„ì˜ ì´ë¦„
 			X509Certificate tsaCert = timeStampToken.getTSACert();
-			System.out.println("  [TSA ¼­¹ö DN] " + tsaCert.getSubjectDN());
+			System.out.println("  [TSA ì„œë²„ DN] " + tsaCert.getSubjectDN());
 			
-			// 2. ½ÃÁ¡È®ÀÎ ÅäÅ«ÀÇ ÀÏ·Ã¹øÈ£
+			// 2. ì‹œì í™•ì¸ í† í°ì˜ ì¼ë ¨ë²ˆí˜¸
 			BigInteger serialNum = timeStampToken.getSerialNumber();
 			
-			System.out.print("  [ÅäÅ« ÀÏ·Ã¹øÈ£] " + serialNum + "(");
+			System.out.print("  [í† í° ì¼ë ¨ë²ˆí˜¸] " + serialNum + "(");
 			
 			byte[] bBuf = serialNum.toByteArray();
 			for (int i=0; i < bBuf.length; i++)
@@ -48,17 +48,17 @@ public class TimeStampService {
 			
 			System.out.println(")");
 			
-			// ½ÃÁ¡È®ÀÎ ÅäÅ« »ı¼º½Ã°£
-			System.out.println("  [ÅäÅ« »ı¼º½Ã°£] " + timeStampToken.getGeneratedTime());
+			// ì‹œì í™•ì¸ í† í° ìƒì„±ì‹œê°„
+			System.out.println("  [í† í° ìƒì„±ì‹œê°„] " + timeStampToken.getGeneratedTime());
 			
-			// ½ÃÁ¡È®ÀÎ ÅäÅ« ¹ß±Ş Á¤Ã¥
-			System.out.println("  [ÅäÅ« ¹ß±ŞÁ¤Ã¥] " + timeStampToken.getPolicy());
+			// ì‹œì í™•ì¸ í† í° ë°œê¸‰ ì •ì±…
+			System.out.println("  [í† í° ë°œê¸‰ì •ì±…] " + timeStampToken.getPolicy());
 			
-			// ½ÃÁ¡È®ÀÎ ÅäÅ«À» ¿äÃ»ÇÑ ¸Ş½ÃÁöÀÇ ÇØ½¬°ª  »ı¼ºÀ» À§ÇØ¼­ »ç¿ëµÈ ¾Ë°í¸®Áò
-			System.out.println("  [ÇØ½¬ ¾Ë°í¸®Áò] " + timeStampToken.getHashAlgorithm());
+			// ì‹œì í™•ì¸ í† í°ì„ ìš”ì²­í•œ ë©”ì‹œì§€ì˜ í•´ì‰¬ê°’  ìƒì„±ì„ ìœ„í•´ì„œ ì‚¬ìš©ëœ ì•Œê³ ë¦¬ì¦˜
+			System.out.println("  [í•´ì‰¬ ì•Œê³ ë¦¬ì¦˜] " + timeStampToken.getHashAlgorithm());
 			
-			// ½ÃÁ¡È®ÀÎ ÅäÅ«À» ¿äÃ»ÇÑ ¸Ş½ÃÁöÀÇ ÇØ½¬°ª
-			System.out.print("  [¸Ş½ÃÁö ÇØ½¬°ª] ");
+			// ì‹œì í™•ì¸ í† í°ì„ ìš”ì²­í•œ ë©”ì‹œì§€ì˜ í•´ì‰¬ê°’
+			System.out.print("  [ë©”ì‹œì§€ í•´ì‰¬ê°’] ");
 			
 			bBuf = timeStampToken.getMessageImprint();
 			for (int i=0; i < bBuf.length; i++)
@@ -66,7 +66,7 @@ public class TimeStampService {
 			
 			System.out.println(" ");
 		
-			// ½ÃÁ¡È®ÀÎ ÅäÅ«À» ¿äÃ»À» À§ÇØ¼­ »ç¿ëµÈ ·£´ı
+			// ì‹œì í™•ì¸ í† í°ì„ ìš”ì²­ì„ ìœ„í•´ì„œ ì‚¬ìš©ëœ ëœë¤
 			System.out.print("  [Nonce] ");
 			
 			bBuf = timeStampToken.getNonce();
